@@ -46,26 +46,26 @@ const passwordReducer = (prevState, action) => {
 const Login = (props) => {
   const [email, dispatchEmail] = useReducer(emailReducer, { value: '', isValid: null })
   const [password, dispatchPassword] = useReducer(passwordReducer, { value: '', isValid: null })
-  const [inputPassword, setInputPassword] = useState('')
   const [formIsValid, setFormIsValid] = useState(false)
-  // useEffect(() => {
-  //   const timerId = setTimeout(() => {
-  //     setFormIsValid(email.value.isValid && inputPassword.trim().length > 7)
-  //   }, 1000)
+  const { isValid: emailIsValid } = email
+  const { isValid: passwordIsValid } = password
 
-  //   return () => {
-  //     clearTimeout(timerId)
-  //   }
-  // }, [inputEmail, inputPassword])
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setFormIsValid(emailIsValid && passwordIsValid)
+    }, 1000)
+
+    return () => {
+      clearTimeout(timerId)
+    }
+  }, [emailIsValid, passwordIsValid])
 
   const emailChangeHandler = (event) => {
     dispatchEmail({ type: 'USER_INPUT', value: event.target.value })
-    setFormIsValid(email.isValid && password.isValid)
   }
 
   const passwordChangeHandler = (event) => {
     dispatchPassword({ type: 'USER_INPUT', value: event.target.value })
-    setFormIsValid(email.isValid && password.isValid)
   }
 
   const validateEmailHandler = () => {
@@ -78,7 +78,7 @@ const Login = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault()
-    props.onLogin(email.value, inputPassword)
+    props.onLogin(email.value, password.value)
   }
 
   return (
